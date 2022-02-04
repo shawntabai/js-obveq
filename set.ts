@@ -51,31 +51,10 @@ export class ObjectSet<T> implements Set<T> {
 }
 
 class SelfEntryIterator<T> implements IterableIterator<[T, T]> {
-  constructor(private readonly backingIterator: IterableIterator<T>) {
-    if (backingIterator.return == null) {
-      delete this.return;
-    }
-    if (backingIterator.throw == null) {
-      delete this.throw;
-    }
-  }
+  constructor(private readonly backingIterator: IterableIterator<T>) { }
 
   [Symbol.iterator](): IterableIterator<[T, T]> {
     return this;
-  }
-  return?(value?: unknown): IteratorResult<[T, T], unknown> {
-    // Non-null-assertion known to be safe because this method will be deleted if the backing method is undefined.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const result = this.backingIterator.return!(value);
-    const convertedValue = (result.value == null) ? result.value : [result.value, result.value];
-    return { done: result.done, value: convertedValue };
-  }
-  throw?(e?: unknown): IteratorResult<[T, T], unknown> {
-    // Non-null-assertion known to be safe because this method will be deleted if the backing method is undefined.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const result = this.backingIterator.throw!(e);
-    const convertedValue = (result.value == null) ? result.value : [result.value, result.value];
-    return { done: result.done, value: convertedValue };
   }
   next(...args: [] | [undefined]): IteratorResult<[T, T], unknown> {
     const result = this.backingIterator.next(...args);
