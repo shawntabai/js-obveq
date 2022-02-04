@@ -45,24 +45,38 @@ describe('.has()', () => {
   });
 });
 
-// const set = new ObjectSet<Foo>();
-// set.add(baseFoo);
-// assertEquals(set.size, 1, 'size');
-// set.add(baseFoo);
-// assertEquals(set.size, 1, 'size');
-// set.add({thing: 'hi', stuff: 0});
-// assertEquals(set.size, 2, 'size');
-// set.add({thing: 'hi', stuff: 1});
-// assertEquals(set.size, 3, 'size');
+describe('.delete()', () => {
+  test('removes equivalent values', () => {
+    const set = new ObjectSet<Foo>();
 
-// assertEquals(set.has(baseFoo), true, 'hasFoo');
-// let deleted = set.delete(baseFoo);
-// assertEquals(deleted, true, 'deleted');
-// assertEquals(set.size, 2, 'size');
-// assertEquals(set.has(baseFoo), false, 'hasFoo');
+    set.add({ thing: 'hi' });
+    const deleted = set.delete({ thing: 'hi' });
 
-// console.log(set.toJSON());
+    expect(deleted).toBe(true);
+    expect(set.size).toBe(0);
+  });
 
-// function assertEquals(actual: unknown, expected: unknown, value?: string) {
-//   console.assert(actual === expected, JSON.stringify({value, expected, actual}));
-// }
+  test('does not find differing values', () => {
+    const set = new ObjectSet<Foo>();
+
+    set.add({ thing: 'hi' });
+    const deleted = set.delete({ thing: 'bye' });
+
+    expect(deleted).toBe(false);
+    expect(set.size).toBe(1);
+    expect(set.has({ thing: 'hi' })).toBe(true);
+  });
+});
+
+describe('JSON.stringify()', () => {
+  test('creates accurate output', () => {
+    const set = new ObjectSet<Foo>();
+
+    set.add({ thing: 'hi' });
+    set.add({ thing: 'hello', stuff: 18 });
+    set.add({ thing: 'bye' });
+
+    expect(JSON.stringify(set)).toBe(
+      '[{"thing":"hi"},{"thing":"hello","stuff":18},{"thing":"bye"}]');
+  });
+});
