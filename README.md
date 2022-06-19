@@ -1,2 +1,2 @@
-# js-obveq
+# objeq
 JS data structures for object value equality
